@@ -1,5 +1,4 @@
-# Lecture 2
-# Image Classification
+# Lecture 2 : Image Classification
 
 컴퓨터는 이미지를 다음과 같이 RGB의 숫자로 받아들인다.
 

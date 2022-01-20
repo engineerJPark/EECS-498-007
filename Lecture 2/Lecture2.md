@@ -10,6 +10,8 @@
 
 하지만 이 숫자들이 명확히 고양이를 다루고 있다고 구분 짓는 것이 어렵다. 이런 차이를 **semantic gap**이라고 한다.
 
+직관의 차이가 있다. 컴퓨터는 그냥 이미지가 데이터화가 되었으니. 우리는 그렇게 보지를 않는다.
+
 
 ----
 
@@ -166,6 +168,8 @@ Hyperparameter를 setting할 때, K = 1로 놓으면 안된다.
 
 train은 parameter validation은 hyperparameter, test는 단 한번의 test를 위해 사용한다.
 
+model이 작을 때와 data가 적을 때 좋다!
+
 더 발전된 방법으로, k-fold dataset을 이용하는 것인데, data를 fold라는 이름의 덩어리로 나눠서 validation set을 교대로 사용하는 것이다.
 
 ![](./image/24.jpg)
@@ -197,3 +201,7 @@ distance가 특정한 의미가 없다는 문제도 있다.
 ![](./image/30.jpg)
 
 그래서 Convnet과 함께 사용해서 개선한다.
+
+CNN에 의한 feature vector를 활용한다. -> image classification, image captioning 등
+
+feature vector : 이미지의 곡선이 얼마인지 등 함축적 정보를 뽑아낸 것.

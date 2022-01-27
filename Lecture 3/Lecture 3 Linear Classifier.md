@@ -38,25 +38,29 @@ Weight에 1을 추가하고 bias를 weight에 통합하는 trick이 있으나 �
 
 ![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%205.png)
 
-하지만 Linear Classifier는 방향이 변하거나 객체가 여러개인 경우에 대해서 대응할 수가 없다. 위의 예시의 경우 말 두마리가 머리를 교차로 두고 겹쳐 있는데, 이런 경우 정확히 예상이 안된다는 것이다.
+하지만 Linear Classifier는 방향이 변하거나 객체가 여러 개인 경우에 대해서 대응할 수가 없다. 위의 예시의 경우 말 두 마리가 머리를 교차로 두고 겹쳐 있는데, 이런 경우 정확히 예상이 안된다는 것이다.
 
-다음은 Geometric Viewpoint이다.
+또한 말이 template이지 그냥 색깔 덩어리라서 기하적 의미가 없다. 색깔만 비슷하면 구분을 못한다...
+
+다음은 Geometric Viewpoint이다. 이번에는 여러 점의 위치를 고려한다.
 
 하나의 픽셀에 대해서 Classifier의 score를 매기면 다음과 같이 한 pixel의 value에 따라 각 Class의 Score가 달라질 것이다.
 
 ![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%206.png)
 
-Geometric Viewpoint에서는 각각의 class가 score가 같아지는 등고선이 존재하는거이다. 그리고 그 등고선에 수직한 방향으로 나아갈 수록 그 score가 커진다.
+Geometric Viewpoint에서는 각각의 class가 score가 같아지는 등고선이 존재하는거 이다. 그리고 그 등고선에 수직한 방향으로 나아갈 수록 그 score가 커진다.
 
-특정 평면을 넘어가는 score가 나오면 해당 class로 인정한다
+특정 평면을 넘어가는 score가 나오면 해당 class로 인정한다.
 
 ![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%207.png)
 
-다만 차원이 높아지면 직관적이지 않게되어 도움이 되지 않는다.
+다만 차원이 높아지면 직관적이지 않게 되어 도움이 되지 않는다.
 
 ![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%208.png)
 
 ## Linear Classfier를 기용하기 어려운 이유
+
+---
 
 아래 경우들 때문에 linear classifier로는 구분이 어렵다.
 
@@ -173,7 +177,7 @@ preference of weight matrices는 같다. 즉 scale만 다르다.
 
 위 그림은 W와 2W가 서로 같은 결과를 내놓는다는 의미이다.
 
-그럼 W와 2W 중에서 무엇을 선택하게 강제해야하나?
+그럼 W와 2W 중에서 무엇을 선택하게 강제해야 하나?
 
 ---
 
@@ -185,9 +189,12 @@ Regularization을 위해 Loss를 다음과 같이 정의한다.
 
 Regularization term을 추가함으로써 세가지 효과를 기대할 수 있다.
 
-1. training error를 최소화하는 것으로는 해결인 안되는 것에 대해, preference를 구별하게 만든다.
-2. training data에만 잘되지 않도록 한다. 과적합 방지
-3. curvature을 더해서 optimization이 더 잘되도록 조정한다.
+1. 단순 오차 이외의 선호도를 추가한다.
+    1. training error를 최소화하는 것으로는 해결인 안되는 것에 대해, preference를 구별하게 만든다.
+2. 과적합 방지
+    1. training data에만 fitting이 잘 되지 않도록 한다. 
+3. 최적화 개선
+    1. curvature을 더해서 optimization이 더 잘되도록 조정한다.
 
 다음은 다양한 Regularization 함수의 종류
 
@@ -200,18 +207,18 @@ Regularization term을 추가함으로써 세가지 효과를 기대할 수 있�
 L2 사용할 때
 
 - data의 noisy
-- 많은 feature가 서로 correlated
+- 많은 feature가 서로 correlated되어 있는 경우
 - like to spread out the weights
 
 L1 사용할 때
 
 - L2와는 반대의 상황을 선호
 - 하나의 feature(아마 class를 의미하는데 잘못 말한 거 아닐까 싶다.)에 weight을 몰아넣기를 선호한다.
-- ***결론 -> training data, Objective에 따라서 사용해야하는 Loss의 종류가 다르다.****
-
----
+- **결론 -> training data, Objective에 따라서 사용해야 하는 Loss의 종류가 다르다.**
 
 # **Regularization to Simpler Models**
+
+---
 
 ![2022-01-17-11-54-26.png](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/2022-01-17-11-54-26.png)
 
@@ -221,9 +228,9 @@ f2가 f1보다 오차는 크지만 generalized가 잘되어있다.
 
 이렇게 모든 data에 오차가 적게 조정하는 과정을 regularization이라고 한다.
 
----
-
 # **기억해야하는 것들**
+
+---
 
 Linear Classifier는 한계가 있다.
 
@@ -233,9 +240,9 @@ regularization은 중요하다. regularization을 통해서 model의 목적을 �
 
 loss function을 교체함으로써 model의 목적을 변경할 수 있다. 즉, 상황에 따라 다른 loss를 사용한다. 언제 model이 좋다고 판단할지도 loss를 변경함으로써 바꿀 수 있다
 
----
-
 # **Cross-Entropy Loss**
+
+---
 
 우선 공식을 보자
 
@@ -265,9 +272,15 @@ cross entropy equation : MLE(Maximum Likelihood Estimation)(likelihood를 maximi
 
 Cross Entropy와 KL divergence는 probability distribution의 차이를 비교할 때 사용한다.
 
----
+### Tips
 
-## **Question**
+임의의 값을 넣어서 나오는 Loss보다, 학습 초기 단계에서 그 Loss가 평균보다 너무 높게 나오면 그건 문제가 있다는 것이다.
+
+loss, weight initialization 등과 같은 것에 문제가 있을 것이다.
+
+# **Question**
+
+---
 
 ### **min/max possible loss of $L_j$ by Cross Entropy Loss**
 
@@ -283,7 +296,7 @@ $**-\log (\frac{1}{number \space of \space class}) = \log (number \space of \spa
 
 일단 이 경우 uniform distribution을 기대할 것이고, softmax를 거치므로 ...
 
-debugging에도 사용할 수 있는데, 예를들어 class가 10개인 CIFAR 10에서는 $\log (10) = 2.3$이 loss의 시작이어야 문제가 없는 것이다.
+**debugging에도 사용할 수 있는데, 예를들어 class가 10개인 CIFAR 10에서는 $\log (10) = 2.3$이 loss의 시작이어야 문제가 없는 것이다.**
 
 $y_i=0$은 ground truth의 index를 의미한다. 
 
@@ -305,17 +318,77 @@ cross entropy의 경우, 이로 인해 그 값이 변하게 된다. cross entrop
 
 cross entropy decrease, SVM 0
 
+# Own Question
+
 ---
 
-# Appendix
-
 ## MLE : Maximum Likelihood Estimation
+
+최대우도법(Maximum Likelihood Estimation, 이하 MLE)은 모수적인 데이터 밀도 추정 방법으로써 파라미터 $θ=(θ_1,⋯,θ_m)$으로 구성된 어떤 확률밀도함수 $P(x|θ)$에서 관측된 표본 데이터 집합을 $x=(x1,x2,⋯,xn)$이라 할 때, 이 표본들에서 파라미터 $θ=(θ_1,⋯,θ_m)$ 를 추정하는 방법이다.
+
+$`x = \lbrace1,4,5,6,9\rbrace`$ 는 왼쪽의 분포를 따를 가능성이 더 높다.
+
+즉 왼쪽 분포가 X에 대한 likelihood가 더 높다는 의미이다.
+
+여기서는 추출된 분포가 정규분포라고 가정했고, 우리는 분포의 특성 중 평균을 추정하려고 했다.
+
+![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%2036.png)
+
+Likelihood란, 데이터가 특정 분포로부터 만들어졌을(generate) 확률을 의미한다.
+
+수치적으로 이 가능도를 계산하기 위해서는 **각 데이터 샘플에서 후보 분포에 대한 높이(즉, likelihood 기여도)를 계산해서 다 곱한 것**을 이용할 수 있을 것이다.
+
+곱해주는 것은 모든 데이터들의 추출이 독립적으로 연달아 일어나는 사건이기 때문이다.
+
+![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%2037.png)
+
+distribution(분포)이 θ=(μ, σ) 의 parameter를 가지고 있는 정규분포라고 가정하자. 그러면 한 개의 데이터가 이 정규분포를 따를 확률은 다음과 같이 계산할 수 있을 것이다.
+
+![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%2038.png)
+
+모든 데이터들이 독립적(independent)이라고 가정하면
+
+![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%2039.png)
+
+### log likelihood
+
+데이터 X가 θ의 parameter를 가지는 distribution을 따르려면, 이 likelihood가 최대가 되는 distribution을 찾아야 한다.
+
+미분의 편의를 위해서, log와 -를 취해서 그 값이 최소가 되는 값을 구함으로써 maximum likelihood를 만들어주는 값을 구한다.
+
+![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%2040.png)
+
+log likelihood 식을 미분하고, 이 식이 0이 되는 값(극솟값)을 찾는다. 이를 만족하는 $\theta$를 찾으면 likelihood를 최대화 할 수 있다.
+
+![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%2041.png)
+
+**likelihood를 최대화하는 parameter 값을 maximum likelihood estimate라고 한다.**
+
+**즉, 이렇게 구한 평균 값과 분산 값의 parameter가 정규분포에 대한 maximum likelihood estimate인 것**
+
+하지만 maximum likelihood는 분산을 실제보다 작게 추정하여 표본에 대하여 overfitting될 수도 있다는 한계점도 지닌다.
+
+### Example
+
+정규분포에 대하여..
+
+![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%2042.png)
+
+![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%2043.png)
+
+이렇게 하면 바로 likelihood를 최대화하는 parameter 두 가지를 구할 수 있다.
+
+![Untitled](Lecture%203%20Linear%20Classifier%208ae9dfe1d87340cf9a618baff8f2c094/Untitled%2044.png)
+
+## L1 L2 **Regularization**
+
+---
+
+# Reference
 
 [https://angeloyeo.github.io/2020/07/17/MLE.html](https://angeloyeo.github.io/2020/07/17/MLE.html)
 
 [https://process-mining.tistory.com/93](https://process-mining.tistory.com/93)
-
-## L1 L2 **Regularization**
 
 [https://light-tree.tistory.com/125](https://light-tree.tistory.com/125)
 

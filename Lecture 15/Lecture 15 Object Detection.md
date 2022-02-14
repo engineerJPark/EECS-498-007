@@ -234,7 +234,7 @@ ResNet이라면 마지막 Conv Layer를 end part로, Residual Block을 Backbone�
 
 ![Image](https://i.imgur.com/ocdUqfC.png)
 
-그리고 RoI를 feature map에 project한다. 이 때, 이 snap이 완전히 겹치지는 않는다.
+그리고 RoI를 feature map에 project한다. 이 때, 이 snap이 완전히 겹치지는 않는다. 이 결과를 feature map 격자에 끼우는 것을 snapping이라고 하는 것이다.
 
 ![Image](https://i.imgur.com/9fh9J2Y.png)
 
@@ -289,6 +289,12 @@ snapping을 하지 않고 linear interpolation을 한다.
 ![Image](https://i.imgur.com/jJx7sIr.png)
 
 # Faster R-CNN: Learnable Region Proposals
+
+2 stage method이다.
+
+stage 1 : Anchor -> Region Proposal
+
+stage 2 : Region Proposal -> Object Box
 
 Region Proposal을 위해서 RPN을 쓰는 것 제외하면 Fast RCNN과 다를 것은 없다.
 

@@ -1,5 +1,3 @@
-조던 피터슨 빌리기
-
 # Lecture 16: Detection and Segmentation
 ---
 
@@ -206,22 +204,31 @@ training은 각 pixel에 대해서 crossentropy loss로 행하면 된다.
 
 ## Semantic Segmentation Idea: Sliding Window
 
-Problem: Very inefficient! Not 
-reusing shared features 
-between overlapping patches
+연산량이 너무 많다. 그리고 겹치는 feature를 재사용하지 못한다.
 
+![Image](https://i.imgur.com/M0uwvis.png)
 
 ## Semantic Segmentation: Fully Convolutional Network
 
-Problem #1: Effective receptive 
-field size is linear in number of 
-conv layers: With L 3x3 conv 
-layers, receptive field is 1+2L
+**3 \* 3, stride = 1, padding = 1인 것을 stack한다면, input과 output의 spatial size는 같다.**
 
-Problem #2: Convolution on 
-high res images is expensive! 
-Recall ResNet stem aggressively 
-downsamples
+**그리고 output의 channel을 class의 개수와 동일하게 만들 것이다.**
+
+그렇게 해서 나온 output의 하나의 픽셀에서 벡터하나를 꺼내면 channel vector가 나올 것이다. 그리고 이 channel vector의 각 channel을 score로 보겠다는 것이다.
+
+그리고 각각의 pixel에 대하여 Cross Entropy Loss를 구할 수 있다.
+
+detection과는 다르게, input size에 따라서 output size가 고정적이다.
+
+![Image](https://i.imgur.com/zHSTsht.png)
+
+### Question : 어떻게 클래스의 개수를 파악하나요?
+
+미리 선정해놓고 해야한다. 이걸 자동으로 할 수는 없다.
+
+VGGNet에서 봤듯, 3\*3 Convnet을 계속 쌓으면 receptive field가 1+2L씩 커진다. 즉, 큰 이미지를 요구하게 된다.
+
+Segmentation은 기본적으로 resolution이 높다. 근데 convolution을 high resolution에 하면 비용이 많이 든다. (그래서 ResNet에서 aggressive downsample을 하는 것.)
 
 ![Image](https://i.imgur.com/XUZW4zK.png)
 
@@ -231,84 +238,221 @@ downsamples
 
 근데 Upsampling이 뭔데?
 
-
-
 # In-Network Upsampling: “Unpooling”
+
+아래는 안쓰는 옛날 방법론들
 
 ![Image](https://i.imgur.com/zuUY5zN.png)
 
+# In-Network Upsampling: Bilinear Interpolation
+
+앞서 봤던 Bilinear Interpolation 방법을 쓸 수도 있다.
+
+가까운 **두 곳의 neighbor**를 이용해서 **linear approximation**을 한다.
+
+![Image](https://i.imgur.com/PQKZ6e1.png)
+
 # In-Network Upsampling: Bicubic Interpolation
 
-Use two closest neighbors in x and y 
-to construct linear approximations
+이미지 프로세싱하면 잘 나오시는 분. 가장 자주 쓰인다고 한다.
 
+가까운 **세 곳의 neighbor를 이용**해서 **cubic approximation**을 한다.
+
+![Image](https://i.imgur.com/p3aOkKs.png)
 
 # In-Network Upsampling: “Max Unpooling”
 
-Use three closest neighbors in x and y to 
-construct cubic approximations
-(This is how we normally resize images!)
+Max pooling의 반대.
 
+여기서부터는 Net에 의존성이 있는 Layer가 된다. 즉, downsampling할 때 사용했던 부분과 연관성(데이터를 기억해서 다시 사용한다는 의미이다. sampling 위치 등)을 띄게 된다.
+
+![Image](https://i.imgur.com/FrcV2Vt.png)
+
+# Tips
+
+어떤 upsampling algorithm을 고를까 <- 어떤 downsampling algorithm을 선택했냐
+
+Average Pooling 을 했었다면, Nearest Neighbor, Bilinear, Bicubic
+
+Max Pooling을 했었다면, Max Unpooling을 해라.
 
 # Learnable Upsampling: Transposed Convolution
 
+앞서 배운 upsampling은 learnable parameter가 없었다.
 
-## Transposed Convolution: 1D example
+이것은 있다! 그래서 학습을 할 수 있다는 것. 방법을 보자.
 
-## Convolution as Matrix Multiplication (1D Example)
+Convolution은 기본적으로 stride를 늘림으로써 downsampling을 할 수 있음을 알 수 있다.
 
+![Image](https://i.imgur.com/F4pX2yO.png)
+
+이제는 stride = 2로 늘렸다.
+
+![Image](https://i.imgur.com/tukh2Og.png)
+
+즉, stride > 1이면 Learnable Downsampling이 된다는 것.
+
+그럼 stride < 1이면 Learnable upsampling이 될 수도 있다는 상상을 할 수도 있겠다.
+
+3\*3 filter에 input tensor의 scalar 값을 곱한다. 그리고 이를 output에 다음 그림과 같이 복사한다.
+
+![Image](https://i.imgur.com/N8wAVLF.png)
+
+아래와 같이 겹치는 부분은 두 output을 더하면 된다.
+
+![Image](https://i.imgur.com/M0BBZw5.png)
+
+원하는 크기의 output이 되도록 마지막에는 잘라주도록 한다.
+
+![Image](https://i.imgur.com/1MayF0r.png)
+
+# Transposed Convolution: 1D example
+
+1D 상황에서의 Transposed Convolution을 살펴본다. input에 filter를 곱한 것을 output에 붙여넣는다고 생각하면 되겠다.
+
+![Image](https://i.imgur.com/EWB0BoN.png)
+
+이름이 좀 많다.
+
+* Deconvolution
+* Upconvolution
+* Fractionally strided convolution
+* Backward strided convolution
+* Transposed Convolution
+
+# Convolution as Matrix Multiplication (1D Example)
+
+Convolution을 행렬곱으로 표현하면 다음과 같다.
+
+$a$는 filter다.
+
+![Image](https://i.imgur.com/Gu0Ybh6.png)
+
+이것이 Transposed convolution이다. 기존 것과는 다르다는 것을 확인할 수 있다.
+
+![Image](https://i.imgur.com/uNvyamc.png)
+
+다음은 stride가 1 이상일 때의 상황이다.
+
+방금 보았던 stride 1일 때와는 다르게 0이 아닌 원소들의 sparsity pattern이 stride에 따라서 크게 달라진다는 것을 알 수 있다.
+
+![Image](https://i.imgur.com/sIgMYDJ.png)
+
+즉, Transposed 된 것의 convolution은 normal convolution으로 표현할 수 없다는 것을 알 수 있다.
+
+Transpose convolution의 forward pass가 Normal Convolution의 backward pass이다.
 
 # 다시 돌아온 Semantic Segmentation: Fully Convolutional Network
 
+![Image](https://i.imgur.com/FGvtR5G.png)
+
+아직 몇 가지 문제가 남아있다.
+
+픽셀별로 class는 구분할 수 있지만 그걸로 object를 detect할 수는 없다는 것.
+
+픽셀 단위로 object를 detect하는 것을 하고 싶다.
+
+![Image](https://i.imgur.com/aCemBlO.png)
+
+보통 컴퓨터 비전에서
+
+Things = object instance로 치는 카테고리 = 개, 고양이, 캔 등...
+
+Stuff = object instance로 안치는 카테고리 = 하늘, 풀, 물, 나무 등...
+
+다음 그림에서 Object Detection은 Things만 찾고, Semantic Segmentaion은 Things와 Stuff를 동시에 찾는다는 것을 알 수 있다.
+
+![Image](https://i.imgur.com/9sVScgB.png)
 
 # Computer Vision Tasks: Instance Segmentation
 
-Instance Segmentation: 
-Detect all objects in the 
-image, and identify the 
-pixels that belong to each 
-object (Only things!)
+Object Detecting 이후에, 각 pixel에 segmentation masking을 하는 작업을 의미한다.
 
-Approach: Perform 
-object detection, then 
-predict a segmentation 
-mask for each object!
+![Image](https://i.imgur.com/Zg29f9R.png)
+
+이걸 해낸 알고리즘이 있었으니.
 
 # Instance Segmentation: Mask R-CNN
 
 Mask Prediction이 추가된다!
 
+이 branch는 object의 background와 foreground를 구분하는 기능을 한다.
+
 ![Image](https://i.imgur.com/vy6U7vu.png)
+
+전체 흐름은 전과 똑같다. 다만 마지막에 segmentation을 masking하는 단계가 있을 뿐이다.
+
+![Image](https://i.imgur.com/EdhOMaO.png)
+
+이제 object detection과 instance segmentation을 동시에 할 수 있게 되었다!
+
+이렇게 좋은 결과가 나온다!
+
+![Image](https://i.imgur.com/LXi17IO.png)
+
+![Image](https://i.imgur.com/ZniuV0q.png)
 
 # Beyond Instance Segmentation: Panoptic Segmentation
 
+Things에 대해서만 번호를 붙여 구분하는 Segmentation이다.
+
+![Image](https://i.imgur.com/F9L1g5h.png)
+
 # Beyond Instance Segmentation: Human Keypoints
-
-
 # Mask R-CNN: Keypoint Estimation
+----
 
-![Image](https://i.imgur.com/K8Pztsw.png)
+사람의 행동을 컴퓨터로 따라하고 싶다.
 
-# Joint Instance Segmentation and Pose Estimation
+사람 몸의 곳곳을 keypoint로 사용한다. 그를 통해서 취하고 있는 자체를 예측한다.
+
+![Image](https://i.imgur.com/XCKzOug.png)
+
+Segmentation mask 대신에 Keypoint Mask를 predict한다.
+
+![Image](https://i.imgur.com/grO0wW5.png)
+
+Object Detection, Keypoint Estimation, Segmentation을 합하면 다음과 같이 사용할 수 있다.
+
+![Image](https://i.imgur.com/Slf9yNA.png)
 
 # General Idea: Add Per-Region “Heads” to Faster / Mask R-CNN!
 
-Per-Region Heads:
-Each receives the features after 
-RoI Pool / RoI Align, makes 
-some prediction per-region
+지금까지의 경험으로 보아, 아래 표시된 Head 부분만 교체하면 무엇이든 할 수 있을 것만 같다.
+
+![Image](https://i.imgur.com/y40Wv7M.png)
 
 # Dense Captioning
 
-Predict a caption per region!
+그래서 위를 때고 LSTM을 넣어서 Image Captioning을 한다. region마다 caption을 예측하는 것.
 
-# 3D Shape Prediction: 
+![Image](https://i.imgur.com/0zMwcp1.png)
 
-Predict a 3D triangle mesh per region!
+그 결과
+
+![Image](https://i.imgur.com/yBgjPgP.png)
+
+
+# 3D Shape Prediction
+
+이번에는 region마다 3D triangle mesh를 예측하겠다는 것.
 
 Mask R-CNN + Mesh Head
 
+![Image](https://i.imgur.com/u3l8mcy.png)
+
+그 결과
+
+![Image](https://i.imgur.com/8phWsTM.png)
+
+.
+
+.
+
+.
+
 # Own Question
+---
 
 ## Online vs Offline learning
 

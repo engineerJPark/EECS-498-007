@@ -1,7 +1,9 @@
 # Lecture 16: Detection and Segmentation
+
 ---
 
 # Slow R-CNN Training
+
 ---
 
 지난 강의에서 했던 Detection을 Training Time 기준으로 더 배운다.
@@ -53,6 +55,7 @@ regression loss는 positive region에 대해서만 존재한다.
 ![Image](https://i.imgur.com/k5tDL6i.png)
 
 # Fast R-CNN Training
+
 ---
 
 여기서는 이미지를 일단 통째로 Backbone에 넣고 결과물로 나온 feature map에다가 region proposal을 한다.
@@ -62,6 +65,7 @@ regression loss는 positive region에 대해서만 존재한다.
 ![Image](https://i.imgur.com/GOKASZi.png)
 
 # Faster R-CNN Training : Learnable Region Proposals
+
 ---
 
 2 stage method이다.
@@ -95,6 +99,7 @@ proposal이 RPN으로 되는 것 제외하면 다른 부분은 Fast R-CNN과 똑
 ![Image](https://i.imgur.com/O8A4Bjp.png)
 
 # Recap: Fast R-CNN Feature Cropping
+
 ---
 
 Fast R-CNN의 목표 중 하나:
@@ -115,17 +120,19 @@ snap하여서 feature map에 나타난 grid cell의 크기가 일정하지는 �
 
 1. snapping 때문에 misaligning이 생긴다.
     snapping이 크게 두가지 방법이 있는데, 하나는 전체의 region proposal을 snap 하는 것이다. 다른 방법은 RoI를 나눠서 snap하는 것이다.
-
+   
     위 그림을 보면 blue box 형태로 snap했다가, 분할을 한 후, 그 분할한 상태로 원래 이미지로 다시 돌려보낸다.
-
+   
     그리고 input image로 돌아간 각 sub region의 중간점은 midpoint라고 부른다.
-
+   
     **이 snapping 때문에 input bounding box의 midpoint와는 위치가 다르다.** 이는 RoI Pool operation에서 잠재적 문제가 된다.
-2.  box coordinate는 backpropagate 할 수가 없다.
-    feature map과, crop할 box의 coordinate를 값으로 받는다.
-    하지만 snapping 때문에 coordinate로는 backpropagate할 수 없다. *snap에 해당하는 미분이 있을리가 없지 않는가?* 즉, 반쪽짜리 gradient만 구할 수 있는 것이다.
+
+2. box coordinate는 backpropagate 할 수가 없다.
+   feature map과, crop할 box의 coordinate를 값으로 받는다.
+   하지만 snapping 때문에 coordinate로는 backpropagate할 수 없다. *snap에 해당하는 미분이 있을리가 없지 않는가?* 즉, 반쪽짜리 gradient만 구할 수 있는 것이다.
 
 # Cropping Features: RoI Align
+
 ---
 
 이 친구가 앞서 본 문제들을 해결한 것.
@@ -167,6 +174,7 @@ output feature가 input box에 정렬되었다! 이제 coordinate를 backpropagt
 ![Image](https://i.imgur.com/sF4Txkh.png)
 
 # No-Anchors Detection
+
 ---
 
 Anchor Box를 안쓰는 방법이 있을까?
@@ -194,6 +202,7 @@ training은 각 pixel에 대해서 crossentropy loss로 행하면 된다.
 즉, 우측하단 임베딩 벡터와 좌측상단 임베딩 벡터가 서로 비슷해야 하나의 박스를 형성한다는 것이다.
 
 # Semantic Segmentation
+
 ---
 
 모든 pixel을 category label을 붙이겠다는 뜻
@@ -399,7 +408,9 @@ Things에 대해서만 번호를 붙여 구분하는 Segmentation이다.
 ![Image](https://i.imgur.com/F9L1g5h.png)
 
 # Beyond Instance Segmentation: Human Keypoints
+
 # Mask R-CNN: Keypoint Estimation
+
 ----
 
 사람의 행동을 컴퓨터로 따라하고 싶다.
@@ -432,7 +443,6 @@ Object Detection, Keypoint Estimation, Segmentation을 합하면 다음과 같�
 
 ![Image](https://i.imgur.com/yBgjPgP.png)
 
-
 # 3D Shape Prediction
 
 이번에는 region마다 3D triangle mesh를 예측하겠다는 것.
@@ -452,6 +462,7 @@ Mask R-CNN + Mesh Head
 .
 
 # Own Question
+
 ---
 
 ## Online vs Offline learning

@@ -195,26 +195,49 @@ Oct-Trees 처럼 multiscale output이 가능하다.
 ![](https://i.imgur.com/VLjdNq9.png)
 
 하지만 구현이 어렵다.
-
-    NN의 구조
-
+    NN의 구조
     SDF로부터 image 정보를 받아오는 것
-
     3D 형태를 추출하는 정확한 알고리즘
 
 # Point Cloud
 
 ---
 
-35:22
-
 ![](https://i.imgur.com/ey8B4uG.png)
+
+Fine한 곳과 아닌곳 따로 point의 개수를 유연히 다룰 수 있다.
+
+Post processing 해야 실물을 볼 수 있다
 
 ![](https://i.imgur.com/WMEPmqK.png)
 
+포인트 클라우드 받고 그걸로 분류하는 구조
+
+하지만 포인트 간의 순서를 학습하지 않도록 하야한다
+
+어떻게?
+
+각각의 point(3차원 coordinate)에 대해서 MLP를 적용해서, 각 point에 대한 독립적인 point feature를 추출해낸다.
+
+그리고 이를 Max Pooling, 모든 point의 feature vector를   하나의 vector를 만들고, FC Layer를 한 번 더 거쳐서 Class score로 만든다.
+
+여기서 order에 무관하게 만드는 연산은 max pooling이다. max 함수 자체는 순서를 따지지 않기 때문.
+
 ![](https://i.imgur.com/9VGVAwk.png)
 
+이번에는 Point Cloud를 생성하는 알고리즘이다.
+
 ![](https://i.imgur.com/omTVZJ9.png)
+
+포인트 클라우드 예측에 관한 새로운 로스 퐁션을 선언한다.  챔퍼 거리는 두 셋이 얼마나 먼지 표현한다
+
+모든 파란 공에서 가장 가까운 주황공을 찾고 유클리드 거리를 측정하고 합한다
+
+두번째 항은 주황색 입장에서 가장 가까운 파란 공을 찾아서 유클리드 거리를 합하는 것이다
+
+로스가 0이 되려면 두 셋이 완전히 일치해야한다
+
+이 로스를 쓰면 점의 순서는 신경쓰지 않아도 된다
 
 ![](https://i.imgur.com/MTXFknT.png)
 
@@ -222,4 +245,200 @@ Oct-Trees 처럼 multiscale output이 가능하다.
 
 ---
 
+매쉬는 점에 삼각형 표면을 만들어놓은 것, 특징은 그대로이다.
+
 ![](https://i.imgur.com/HzWxJBt.png)
+
+첫 번째 방법으로는 vertex를 이용해서 triangle face를 만드는 것이다.
+
+![](https://i.imgur.com/qRsCSYg.png)
+
+![](https://i.imgur.com/wGSWBvj.png)
+
+![](https://i.imgur.com/sTQTwVv.png)
+
+flat surface를 만들기도 용이하고, fine graphic을 위해서 surface를 추가하기도 쉽다.
+
+또한 다른 데이터를 vertex마다 추가하고 이를 중간 지점에서는 interpolate해서 사용하기도 쉽다.
+
+다만 Neural Network에서 다루기 쉽지 않은 자료구조라는 문제가 있다.ㄴ
+
+![](https://i.imgur.com/pg2AWJU.png)
+
+## Predicting Mesh : Pixel2Mesh
+
+이번에는 input image를 주면, 그에 맞는 Mesh를 추출해내는 Network를 살펴본다.
+
+![](https://i.imgur.com/Exca0Ly.png)
+
+### Iterative Refinement
+
+타원형 구의 vertex를 조금씩 변환해서 이미지에 근접한 형태로 만드는 것이다.
+
+![](https://i.imgur.com/GTDo7vv.png)
+
+### Graph Convolution
+
+Graph 내부를 sliding하면서 연산하는 새로운 Convolution이다.
+
+원래 Convolution과 동일하게, 중심 위치와 주변의 다른 node들이 동시에 관여된다.
+
+input : Graph, vertex에 각각의 feature vertor가 있다.
+
+![](https://i.imgur.com/7WR9xfL.png)
+
+이 연산을 기반으로 Graph convolution layer를 stacking한다.
+
+매 iteration마다. 각 vertex에 있는 feature vector를 개선한다. Graph Convolution을 이용하면 neighbor의 영향을 받은 채로 개선되게 되는 효과가 있다.
+
+![](https://i.imgur.com/wingsvw.png)
+
+하지만 원래 우리 목적은 2D image -> mesh 였다.
+
+이를 위해서는 2D image를 graph로 바꿔줄 것이 먼저 필요하다.
+
+### Vertex-Aligned Features
+
+각 vertex마다 feature와 spatial position을 모으는 feature vector를 만드는 법을 알아보자.
+
+image를 CNN에서 Feature를 구한다.
+
+weight 역할인 mesh를 각 평면에 project한다.
+
+여기서 project한 위치가 완전한 grid가 아니면 bilinear interpolation을 해서 그 feature를 ㄴ구한다.
+
+![](https://i.imgur.com/bVRQX1Z.png)
+
+RoI Align할 때 나오던 Bilinear interpolation과 비슷하다.
+
+![](https://i.imgur.com/3fh8Klm.png)
+
+### Loss Function
+
+Loss function을 만들자.
+
+문제는 같은 형상을 서로 다른 mesh를 이용해서 표현할 수 있다는 점이다.
+
+![](https://i.imgur.com/ZFpQTum.png)
+
+그냥 mesh 위에 점을 여러 개 찍고, point cloud의 Loss function을 써라. Chamfer distance
+
+![](https://i.imgur.com/W5tBAWi.png)
+
+point를 찍는 시점이 prediction은 예측할 당시이고, GT image의 경우, 미 리 찍어놓고 한다.
+
+![](https://i.imgur.com/RG1J9FK.png)
+
+# 3D Shape prediction
+
+---
+
+![](https://i.imgur.com/AmNVABQ.png)
+
+우선 Metric에 대해서 언급한다.
+
+## Metric
+
+앞서 bounding box로 IoU를 측정했듯이 비슷하게 측정할 수 있지만, 이게 좋은 방법이 아님이 드러났다.
+
+![](https://i.imgur.com/MqnUIAm.png)
+
+![](https://i.imgur.com/OkoNJtC.png)
+
+다른 방법은 Chamfer Distance와 비슷하게 하는 것. 모든 vertices를 분리하고 이를 point cloud 형태로 둔다음에 chamfer distance을 구한다.
+
+하지만 이것도 문제 : L2 distance 기반이라서, outliers에 굉장히 민감해진다.    
+
+![](https://i.imgur.com/vtBVskK.png)
+
+그래서 사용하는 것이
+
+F1 Score이다.
+
+아래는 주황이 predicted, 파랑이 Ground Truth이다.
+
+shpere를 predicted point에 생성하고, 일정 범위 이내로 GT point가 존재하면, Precision은 옳은 것이다.
+
+반대로, shpere를 GT point에 생성하고, 일정 범위 이내로 predicted point가 존재하면, Recall의 값을 올린다.
+
+![](https://i.imgur.com/Uq1lHnY.png)
+
+F1 score는 3D data를 비교하기에 적합한 규격이다.
+
+조금 더 outlier에 둔감하기 때문이다.
+
+![](https://i.imgur.com/7a0FwcB.png)
+
+![](https://i.imgur.com/utuklmr.png)
+
+## Camera Systems
+
+3D data를 다룰 때에는 어떤 coordinate를 사용할 지 결정해야한다.
+
+다음과 같이 구분할 수 있다. 여기서 canonical coordinate는 직교좌표계를 얘기하는 것
+
+![](https://i.imgur.com/MY7cYjX.png)
+
+canonical한 방법이 더 쉽다.
+
+다만 output의 feature가 더 이상은 input의 feature과 정렬되어있지는 않다는 것이다.
+
+하지만 이는 View point coordinates를 사용하면 해결된다.
+
+![](https://i.imgur.com/Rn4NWKr.png)
+
+![](https://i.imgur.com/WCkon14.png)
+
+결론 : **View Coordinate가 더 성능이 좋다.**
+
+만약 View coordinate를 이용한다면, View Centric Voxel Prediction을 할 수 있고, 매우 자연스러운 결과가 나온다.
+
+이는 input image와 aligned된 tube로 predicted 되기 때문이다...
+
+![](https://i.imgur.com/auOuc96.png)
+
+frustums : 입체를 평행한 두 평면으로 절단 할 때 그 두 평면 사이의 부분을 의미한다. 여기서 입체는 보통 원뿔 혹은 각뿔이다.
+
+## Datasets
+
+ShapeNet : CAD 파일, Pix3D : 실제 가구에 3D CAD(mesh)를 적용.
+
+![](https://i.imgur.com/iO7JO1S.png)
+
+# Mesh R-CNN
+
+---
+
+저번에 말하다가 만 것.
+
+이미지를 받아서 3D 파일을 만들고 싶다.
+
+![](https://i.imgur.com/xrsTpSe.png)
+
+![](https://i.imgur.com/MEBpQmw.png)
+
+위상적으로 동일한 것만 표현 가능하다. 즉, 평면으로 도넛처럼 구멍이 뚫려 있는 것을 만들 수는 없다.
+
+아래 그림 두번째 행이 바로 그런 경우, 구멍이 있어야하는데 초기 조건이 구멍이 없어서 저렇게 난잡한 형상이 남아있다.
+
+![](https://i.imgur.com/o2XhP64.png)
+
+그래서 이를 해결하기 위해서 voxel prediction을 먼저 해서 initial mesh prediction을 만들고, 이에 대해서 mesh를 가다듬는 방식으로 진행한다.
+
+![](https://i.imgur.com/S8QMfB9.png)
+
+다음과 같은 절차를 거치게 된다.
+
+![](https://i.imgur.com/fgH5NcL.png)
+
+Chamfer loss만 사용하면 mesh가 degenerate된다. 특히 edge가 잘 안잡힌다. 그래서 mesh regularizer를 추가해서 사용한다.
+
+![](https://i.imgur.com/31h76fT.png)
+
+Amodal Dectection의 기능을 가지게 된다 =  가려진 부분도 파악 가능한 detecting
+
+![](https://i.imgur.com/296WvML.png)
+
+2d가 잘 안되는 곳은 3d도 실패하더라.. Segmentation이 잘 안되니 Mesh도 잘 안생긴다.
+
+![](https://i.imgur.com/LsZIkxv.png)

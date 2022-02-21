@@ -66,9 +66,9 @@ input으로 hidden state를 update하고, 이를 통해서 output을 만든다.
 
 hidden state를 update하는 공식은 다음과 같다.
 
-여기서 주의해야할 것은 $f_W$와 weight $W$는 항상 동일해야 한다.
+**여기서 주의해야할 것은 $f_W$와 weight $W$는 항상 동일해야 한다.**
 
-이를 통해서 모든 sequence에 같은 가중치가 가해지게 된다.
+**이를 통해서 모든 sequence에 같은 가중치가 가해지게 된다.**
 
 → arbitary한 길이의 sequence에 대응할 수 있게 된다.
 
@@ -76,7 +76,7 @@ hidden state를 update하는 공식은 다음과 같다.
 
 가장 기본적인 RNN의 hidden state eq는 다음과 같다.
 
-sequence의 모든 부분에 대해서 tanh와 W_{hh}와 W_{xh}는 고정되어야 한다.
+sequence의 모든 부분에 대해서 tanh와 $W_{hh}$와 $W_{xh}$는 고정되어야 한다.
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2010.png)
 
@@ -146,7 +146,7 @@ output으로 나온 예측 결과를 다음 input으로 넣는다.
 
 방금 전까지는 input을 one hot vector로 encoding 했다.
 
-보면 그냥 간단하게 하나의 column만 나오기 때문에, Matrix Multiplying을 하지 않고 Embedding으로 처리할 수 있다.
+보면 그냥 간단하게 하나의 column만 나오기 때문에, **Matrix Multiplying을 하지 않고 Embedding으로 처리할 수 있다.**
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2020.png)
 
@@ -210,15 +210,15 @@ forward pass에서는 hidden state를 통해서 sequence를 계속해서 가지�
 
 ---
 
-RNN이 학습하고 있는 data는 대체 무엇인가???
+RNN이 학습하고 있는 data는 대체 무엇인가??? 이를 알아보기 위해서 hidden unit을 살펴본다.
 
-unroll 한 후, 많은 step을 학습 시킨다. 그리고 다음 character를 predict하도록 한다.
+실험을 위해서, RNN을 unroll 한 후, 많은 step을 학습 시킨다. 그리고 다음 character를 predict하도록 한다.
 
 그 와중에 hidden state를 계속 생성하게 한다.
 
-방금 질문에서, hidden state가 가지고 있는 dimension이 output과 뭐가 다르냐가 중요해준다.
 
-hidden state가 56이라고 하면, tanh를 통과하면 56개의 -1 to 1인 숫자가 생긴다. 그리고 이 숫자를 이용해서 RNN이 생성 중이던 text에 색칠을 할 것이다.
+
+방금 질문에서, hidden state가 가지고 있는 dimension이 output과 뭐가 다르냐가 중요하다. hidden state가 56이라고 하면, tanh를 통과하면 56개의 -1 to 1인 숫자가 생긴다. 그리고 이 숫자를 이용해서 RNN이 생성 중이던 text에 색칠을 할 것이다.
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2029.png)
 
@@ -268,7 +268,7 @@ indentation level을 학습했다.
 
 마찬가지로, 마지막 신호에 end 신호가 나오도록 예측을 하게 만든다. (start token, end token)
 
-공식도 바꾼다.
+공식도 바꾼다. **Convolution에서 data를 hidden state로 넘기기 위해서 $W_{ih} * v$를 추가한다.**
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2037.png)
 
@@ -280,21 +280,19 @@ indentation level을 학습했다.
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2039.png)
 
-여기서 W_{ih}는 전이 학습된 Conv Net의 두 번째 마지막 FC Layer에서 오고, v는 입력된 이미지를 한 번 ConvNet을 거친 것에서 온다.
-
-그리고 이걸 각 time step마다 넣는다..
+**여기서 $W_{ih}$는 전이 학습된 Conv Net의 두 번째 마지막 FC Layer에서 오고, v는 입력된 이미지를 한 번 ConvNet을 거친 것에서 온다. 그리고 이걸 각 time step마다 hidden state에 넣는다.**
 
 # Vanilla RNN Gradient Flow
 
 ---
 
-일단 gradient가 탄ㅎ을 거친다는 문제가 있다
+일단 gradient가 tanh을 거친다는 문제가 있다
 
 그런데 이건 이것보다 나은 모델이 없어서 해결 불가
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2040.png)
 
-진짜 문제는 매번 gradient에 weight로 곱해지는 것.
+진짜 문제는 매번 gradient에 weight로 곱해지는 것. (+ tanh의 반복 대입)
 
 이러면 exploding 혹은 vanishing이 일어날 수도 있다.
 
@@ -342,19 +340,23 @@ g gate : cell에 얼마나 쓸지 정한다. (-1 ~ 1)
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2045.png)
 
-c_t와 c_t-1 사이의 gradient flow를 보자.
+$c_t$와 $c_{t-1}$ 사이의 gradient flow를 보자.
 
 아다마르 곱(각 원소끼리 곱하는 것)은 그냥 백프롭할 때 각 원소별로 그라디언트 곱하는 걸로 처리된다.
 
 여기서 forget gate가 시그모이드를 거치므로, 0~1인 수가 곱해질 것이다.
 
-결과적으로, c_t와 c_t-1 사이에 논리니어리티나 행렬곱이 없다. 즉, 방해가 없다
+결과적으로, $c_t$와 $c_{t-1}$ 사이에 non-linearity나 matrix multiplication이 없다.
+
+즉, 방해가 없다.
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2046.png)
 
-c_t와 c_t-1 사이의 가장 윗부분에 highway 형성됨.
+$c_t$와 $c_{t-1}$ 사이의 가장 윗부분에 highway 형성됨.
 
 이걸로만 gradient descent를 한다. Weight에 대해서는 gradient를 하지 않는다.
+
+**(다시 확인할 것)**
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2047.png)
 
@@ -384,6 +386,10 @@ Vanilla RNN은 잘 안쓰고, LSTM과 GRU가 자주 쓰인다.
 
 gradient 문제는 다음과 같이 해결한다.
 
-exploding → gradient clipping
+    exploding → gradient clipping
 
-vanishing → LSTM (additive interaction)
+    vanishing → LSTM (additive interaction)
+
+better/simpler architecture are a hot topic
+
+better understanding is needed

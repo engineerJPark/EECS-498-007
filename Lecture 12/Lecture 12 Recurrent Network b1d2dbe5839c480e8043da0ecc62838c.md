@@ -216,8 +216,6 @@ RNN이 학습하고 있는 data는 대체 무엇인가??? 이를 알아보기 �
 
 그 와중에 hidden state를 계속 생성하게 한다.
 
-
-
 방금 질문에서, hidden state가 가지고 있는 dimension이 output과 뭐가 다르냐가 중요하다. hidden state가 56이라고 하면, tanh를 통과하면 56개의 -1 to 1인 숫자가 생긴다. 그리고 이 숫자를 이용해서 RNN이 생성 중이던 text에 색칠을 할 것이다.
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2029.png)
@@ -342,21 +340,19 @@ g gate : cell에 얼마나 쓸지 정한다. (-1 ~ 1)
 
 $c_t$와 $c_{t-1}$ 사이의 gradient flow를 보자.
 
-아다마르 곱(각 원소끼리 곱하는 것)은 그냥 백프롭할 때 각 원소별로 그라디언트 곱하는 걸로 처리된다.
+아다마르 곱(각 원소끼리 곱하는 것)은 backpropagation 할 때 각 원소별로 그라디언트 곱하는 걸로 처리된다.
 
-여기서 forget gate가 시그모이드를 거치므로, 0~1인 수가 곱해질 것이다.
+여기서 forget gate가 시그모이드를 거치므로, 0~1인 수가 곱해질 것이다. 이는 information이 유실될 가능성이 존재한다. 하지만 simoid를 거쳐서 propagating 되는 것은 아니다. 그러므로 전보다 정보 손실이 덜하다.
 
-결과적으로, $c_t$와 $c_{t-1}$ 사이에 non-linearity나 matrix multiplication이 없다.
-
-즉, 방해가 없다.
+즉, f가 0에 가까우면 정보가 사라지고, 1에 가까우면 정보가 유지된다. 과적으로, $c_t$와 $c_{t-1}$ 사이에 non-linearity나 matrix multiplication이 없다. 즉, gradient pass에 방해가 없다.
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2046.png)
 
 $c_t$와 $c_{t-1}$ 사이의 가장 윗부분에 highway 형성됨.
 
-이걸로만 gradient descent를 한다. Weight에 대해서는 gradient를 하지 않는다.
+기본적으로는 c로만 gradient descent를 한다고 생각한다.
 
-**(다시 확인할 것)**
+Weight에 대해서는 gradient를 하긴 하지만 이 highway만으로도 충분히 정보가 전달되고 있다고 믿는다.
 
 ![Untitled](Lecture%2012%20Recurrent%20Network%20b1d2dbe5839c480e8043da0ecc62838c/Untitled%2047.png)
 

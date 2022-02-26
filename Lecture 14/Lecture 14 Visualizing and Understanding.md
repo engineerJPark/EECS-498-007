@@ -5,6 +5,7 @@
 약간 GAN의 느낌이 들어있다.
 
 # What’s going on inside Convolutional Networks?
+
 ---
 
 대체 각 Layer가 배우는 건 뭔데요???
@@ -36,6 +37,7 @@ edge와 orientation을 학습한다.
 ![Image](https://i.imgur.com/2ZPYSA3.png)
 
 # Last Layer
+
 ---
 
 ![Image](https://i.imgur.com/eaaKsRa.png)
@@ -64,15 +66,19 @@ AlexNet에서 학습된 4096 dimension의 vector를 Nearest Neighbors에 넣는�
 
 ## Dimensionality Reduction
 
-4096차원의 vector를 2 ~ 3차원으로 낮추는 것
+4096차원의 vector를 2 ~ 3차원으로 낮추는 방법이 있다.
 
 PCA를 이용해서 차원을 줄인다. Spatial structure는 최대한 유지하고, 작은 차원으로 projection한다.
 
 T sne도 비슷한 방법론. NonLinear하게, Spatial structure는 최대한 유지하고, 작은 차원으로 projection한다.
 
-Test set을 t-SNE를 먹여서 2차원으로 만들고 그 지점에 이미지를 넣은 것. 포인트가 디짓이다..
+Test set을 t-SNE를 먹여서 2차원으로 만들고 그 지점에 이미지를 넣은 것. 포인트가 digit이다.
 
 Learned feature vector가 그냥 raw pixel이 아니라, class를 학습하는 것임을 알 수 있다
+
+![](https://i.imgur.com/djRHAxD.png)
+
+---
 
 Weight이 아니라 중간의 convolution activation을 확인해서 input image와 비교하는 방법이 있다.
 
@@ -83,9 +89,21 @@ Row는 각 필터이고, 각 필터마다 최고 반응을 보이는 패치를 �
 
 아래는 더 깊은 레이어에서 트레이닝 한 것. 그래서 더 넓은 이미지를 패치로 받는다.
 
+완전히 까만 곳은 아마 ReLU 때문일 것이라고
+
+![](https://i.imgur.com/lxnBRSs.png)
+
+이렇게 가장 큰 반응을 보이는 patch를 떼어와서 모아서 볼 수 있다.
+
+![](https://i.imgur.com/W8MK7gP.png)
+
+---
+
 어느 픽셀이 분류에 큰 영향을 미치는지 알아보는 방법도 있다. 일부분을 가리는 것.
 
-이렇게 sailency map을 구한다. 어떤 부분이 분류에 큰 영향을 미치는지 알아낸다. 이를 이용해서 Net이 cheat하는 지 알 수 있다. = 코끼리보고 판단하는 게 아니라 땅바닥 색깔보고 판단한다던가 하는 걸 cheat한다고 하면 된다.
+이렇게 sailency map을 구한다. 어떤 부분이 분류에 큰 영향을 미치는지 알아낸다. 이를 이용해서 Net이 cheat하는 지 알 수 있다.( = 코끼리보고 판단하는 게 아니라 땅바닥 색깔보고 판단한다던가 하는 걸 cheat한다고 하면 된다.)
+
+![](https://i.imgur.com/KTGyJ2v.png)
 
 ---
 
@@ -106,6 +124,7 @@ gradient of the dog score를 각 input image에 대해서 저장한다.
 ![Image](https://i.imgur.com/b0oFAI4.png)
 
 # Intermediate Features via guided backprop
+
 ---
 
 이제는 중간에 들어있는 Layer에 대해서 얘기해보자.
@@ -133,6 +152,7 @@ ReLU에 대해서 0보다 작은 곳은 모두 0으로 만들어버린다. 그�
 ![Image](https://i.imgur.com/XewiP47.png)
 
 # Gradient Ascent
+
 ---
 
 이 방법은 이미 학습이 완료된 Net을 기준으로 행한다.
@@ -185,25 +205,28 @@ regularizer를 개선하면 더 좋은 결과를 받을 수 있다. 또한 이�
 금발근육남의 사견으로는 L2와 같은 단순한 Regularizer가 Net이 무엇을 보는 지에 대한 더 정확한 데이터를 내놓는다고 한다.
 
 # Adversarial Examples
+
 ---
 
-1.Start from an arbitrary image
-2.Pick an arbitrary category
-3.Modify the image (via gradient ascent) to maximize the class score
-4.Stop when the network is fooled
+1. Start from an arbitrary image
+
+2. Pick an arbitrary category
+
+3. Modify the image (via gradient ascent) to maximize the class score
+
+4. Stop when the network is fooled (코끼리인데 코알라라고 믿는)
 
 즉, 겉으로 봐서는 알 수 없게 이미지의 아주 조금만 다르게 변경해서 classification이 아예 다르게 나오도록 할 수 있다는 의미이다.
 
 ![Image](https://i.imgur.com/A5r2nxL.png)
 
 # Feature Inversion
+
 ---
 
-test set image를 받아서 feature extraction을 한다.
+test set image를 받아서 feature extraction을 한다. 그리고 Feature를 invert한다. Feature에서 input을 역으로 뽑아내는 것.
 
 이 feature extraction과 동일한 represiontation을 갖는 새로운 이미지를 생성하기 위해 gradient descent를 한다.
-
-이를 위해 Feature를 invert한다.
 
 ![Image](https://i.imgur.com/Tj3NrVb.png)
 
@@ -214,6 +237,7 @@ test set image를 받아서 feature extraction을 한다.
 ![Image](https://i.imgur.com/r6GQfFR.png)
 
 # DeepDream : Amplify Existing Features
+
 ---
 
 여기서부터는 그냥 재미용
@@ -277,7 +301,6 @@ Gram Matrix의 의미 : 어떤 channel feature가 반응을 함께 하나?
 3. 이는 곧 unnormalized covariance between feature vectors
 
 4. 그램행렬은 구조적특성을 모두 버렸다
-
 
 # Neural Texture Synthesis
 
@@ -350,6 +373,8 @@ Instance norm is for fast style transfer -> high quality
 
 instance normalization이 바로 이 Fast Nueral Style Transfer에 사용된다.
 
+한 블럭이 사진 한장
+
 ![Image](https://i.imgur.com/VfRvAey.jpg)
 
 ![Image](https://i.imgur.com/S9KIlc9.jpg)
@@ -366,6 +391,6 @@ conditional instance normalization : 기존은 scale, shift parameter(normalizat
 
 Activations: Nearest neighbors, Dimensionality reduction, maximal patches, occlusion
 
-Gradients: Saliency maps, class visualization, fooling images,	feature	inversion
+Gradients: Saliency maps, class visualization, fooling images, feature inversion
 
 Fun: DeepDream, Style Transfer.

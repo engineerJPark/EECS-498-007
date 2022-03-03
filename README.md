@@ -48,8 +48,6 @@ EECS 498 : Deep Learning for Computer Vision을 공부하면서 정리한 필기
 
 [Lecture 21]()
 
-
-
 ## Assignment file
 
 [Assignment 1 | EECS 498-007 / 598-005: Deep Learning for Computer Vision (umich.edu)](https://web.eecs.umich.edu/~justincj/teaching/eecs498/FA2019/assignment1.html)
@@ -64,7 +62,9 @@ EECS 498 : Deep Learning for Computer Vision을 공부하면서 정리한 필기
 
 [Assignment 6 | EECS 498-007 / 598-005: Deep Learning for Computer Vision (umich.edu)](https://web.eecs.umich.edu/~justincj/teaching/eecs498/FA2019/assignment6.html)
 
+### coutil file
 
+[starter-code/coutils at master · deepvision-class/starter-code (github.com)](https://github.com/deepvision-class/starter-code/tree/master/coutils)
 
 ## Solution File
 

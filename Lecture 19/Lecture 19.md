@@ -294,7 +294,8 @@ https://taeu.github.io/paper/deeplearning-paper-vae/
 
 3. 이 때, x는 image이고, z는 latent factor used to generate x로 친다.
 
-4. training data(정확히는 training 결과로 나온 data) ${x^{(i)}}^{N}_{i=1}$은 latent representation z으로 부터 나온다고 가정한다.
+4. training data ${x^{(i)}}^{N}_{i=1}$로 부터 latent representation z를 추출하고, image generating을 한다.
+(generated image를 input한다는 것이 아니다.)
 
 ![](https://i.imgur.com/k3KBHz6.png)
 

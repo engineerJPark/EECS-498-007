@@ -78,11 +78,17 @@
   
   - 그래서 만약 latent variable을 uncorrelated하게 학습하려고 한다고 하면, mean과 standard deviation of z은 각 layer에서 많은 parameter와 weight을 공유해서 그 결과가 나오게 된다.
 
+- 여기서 $q_\phi(z|x)$ (정규분포라고 가정했다.)와 $p(z)$가 똑같아야 KL divergence가 0이 된다.
+- encoder는 뭐 강아지 다리가 평균 4개에 분산으로 2개 정도가 된다.
+- **즉, $p(z)$를 정규분포로 만드는 것이 목적이다.**
+
 ![](https://i.imgur.com/tKO2yxn.png)
 
 - 예측한 distribution으로부터 sampling을 해서 concrete한 z를 구한다.
 
 - 그리고 이제는 distribution over the images x를 구한다.
+
+- decoder의 결과가 input image와 비슷해야한다.
 
 ![](https://i.imgur.com/nzEfStC.png)
 
@@ -100,7 +106,7 @@
     
     - 그러고 나면 이제 second term은 구하기 너무 쉽다. x|z의 distribution만 주어지면 쉬워진다.
 
-![](C:\Users\jshac\AppData\Roaming\marktext\images\2022-03-01-20-23-35-image.png)
+![Image](https://i.imgur.com/g5oXikV.png)
 
 - 이렇게 loss에 있는 두 개의 term의 값을 Encoder와 Decoder를 통해서 구하고, jointly train할 수 있다.
 
@@ -324,6 +330,8 @@
   - 두번째 항을 아래와 같이 plot한다.
   
   - 처음 학습이 시작하는 부분에서 D(G(z)) = 0인데, 그래프를 보면 이 구간에서는 gradient가 0인 것을 알 수 있다.
+
+  - 이는 초반 generated image는 거의 매번 거짓이니깐, 거짓만 계속 나오게 된다는 것이다. 즉, 학습이 안된다.
 
 - 그래서 G를 학습할 때, log(1-D(G(z)))를 최소화하는 것이 아니라 -log(D(G(z)))를 최대화 하도록 학습한다. 그러면 초기 gradient가 높게 나오게 된다.
 

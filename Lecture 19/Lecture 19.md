@@ -278,6 +278,14 @@ encoder를 다른 부분의 initial part로 만들고, 다른 data에 train한�
 
 # Variational Autoencoder
 
+다른 부분을 찾아볼 필요가 있다.
+
+https://redstarhong.tistory.com/77
+
+https://taeu.github.io/paper/deeplearning-paper-vae/
+
+**autoencoder는 확률적이지 않다. VAE는 여기에 확률 분포의 개념을 더해줬다.**
+
 이 모델의 특징
 
 1. raw data로부터 latent feature z를 학습
@@ -286,7 +294,7 @@ encoder를 다른 부분의 initial part로 만들고, 다른 data에 train한�
 
 3. 이 때, x는 image이고, z는 latent factor used to generate x로 친다.
 
-4. training data ${x^{(i)}}^{N}_{i=1}$은 latent representation z으로 부터 나온다고 가정한다.
+4. training data(정확히는 training 결과로 나온 data) ${x^{(i)}}^{N}_{i=1}$은 latent representation z으로 부터 나온다고 가정한다.
 
 ![](https://i.imgur.com/k3KBHz6.png)
 
@@ -378,7 +386,7 @@ input image x에서 output으로 z를 내놓는다.
 
 ![](https://i.imgur.com/KDySD7Q.png)
 
-왼쪽은 decoder, 오른쪽은 encoder이다.
+왼쪽은 decoder, 오른쪽은 encoder이다. 
 
 ![](https://i.imgur.com/8qlcqOC.png)
 
@@ -423,3 +431,5 @@ input image x에서 output으로 z를 내놓는다.
 **lower bound가 최대가 되도록하는 parameter를 학습시키는 것이 목적인 것이다.**
 
 ![](https://i.imgur.com/t1WmU8r.png)
+
+VAE 사진이 흐리게 나오는 것은 VAE의 p(z)가 diagonal Gaussian distribution이라는 가정 때문이다.

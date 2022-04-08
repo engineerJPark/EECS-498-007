@@ -4,50 +4,6 @@ EECS 498 : Deep Learning for Computer Vision을 공부하면서 정리한 필기
 
 추후 Assingment에 대한 풀이도 올릴 예정입니다.
 
----
-
-## Lecture Notes
-
-[Lecture 2]()
-
-[Lecture 3]()
-
-[Lecture 4]()
-
-[Lecture 5]()
-
-[Lecture 6]()
-
-[Lecture 7]()
-
-[Lecture 8]()
-
-[Lecture 9]()
-
-[Lecture 10]()
-
-[Lecture 11]()
-
-[Lecture 12]()
-
-[Lecture 13]()
-
-[Lecture 14]()
-
-[Lecture 15]()
-
-[Lecture 16]()
-
-[Lecture 17]()
-
-[Lecture 18]()
-
-[Lecture 19]()
-
-[Lecture 20]()
-
-[Lecture 21]()
-
 ## Assignment file
 
 [Assignment 1 | EECS 498-007 / 598-005: Deep Learning for Computer Vision (umich.edu)](https://web.eecs.umich.edu/~justincj/teaching/eecs498/FA2019/assignment1.html)

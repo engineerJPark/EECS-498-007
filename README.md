@@ -27,9 +27,3 @@ EECS 498 : Deep Learning for Computer Vision을 공부하면서 정리한 필기
 [GitHub - iMeleon/EECS-498-007-598-005-solutions: EECS 498-007 / 598-005 Deep Learning for Computer Vision](https://github.com/iMeleon/EECS-498-007-598-005-solutions)
 
 [GitHub - jasonbian97/Deep-Learning-Computer-Vision: Personal implementation for Stanford CS231n / Umich: Deep Learning for Computer Vision (by Justin Johnson)](https://github.com/jasonbian97/Deep-Learning-Computer-Vision)
-
-[GitHub - seloufian/Deep-Learning-Computer-Vision: My assignment solutions for Stanford’s CS231n (CNNs for Visual Recognition) and Michigan’s EECS 498-007/598-005 (Deep Learning for Computer Vision), version 2020.](https://github.com/seloufian/Deep-Learning-Computer-Vision)
-
-[GitHub - Kinghsy/EECS-498-598-Deep-Learning: EECS 498/598 Deep Learning materials at Umich of Spring 2019](https://github.com/Kinghsy/EECS-498-598-Deep-Learning)
-
-[GitHub - amsavchenko/eecs-498-007: My solutions for assignments of EECS 498-007 / 598-005 class: Deep Learning for Computer Vision](https://github.com/amsavchenko/eecs-498-007)
